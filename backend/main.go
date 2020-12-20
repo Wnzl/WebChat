@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/Wnzl/webchat/http"
 	"github.com/Wnzl/webchat/storage"
-	"github.com/joho/godotenv"
 	"github.com/tarent/logrus"
 	"os"
 	"strconv"
@@ -18,11 +17,6 @@ const (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		logrus.WithError(err).Fatal("Error loading .env file")
-	}
-
 	port, err := strconv.Atoi(os.Getenv(dbPortEnv))
 	if err != nil {
 		logrus.WithError(err).Fatal("Converting port to int")

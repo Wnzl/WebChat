@@ -1,4 +1,4 @@
-FROM golang:1.15.2-alpine
+FROM golang:1.15.2-alpine as builder
 
 WORKDIR /app
 
@@ -13,7 +13,6 @@ FROM alpine:latest
 WORKDIR /server
 
 COPY --from=builder /app/api /server
-COPY --from=builder /app/.env /server
 COPY --from=builder /app/storage/migrations /server/storage/migrations
 EXPOSE 8080
 ENTRYPOINT ["./api"]
