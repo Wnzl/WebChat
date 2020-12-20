@@ -1,14 +1,19 @@
-FROM golang:1.14
+FROM golang:1.15.2-alpine
 
-WORKDIR /go/src/app
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN go install -v
+RUN CGO_ENABLED=0 GOOS=linux go build -o api .
 
-CMD ["webchat"]
+FROM alpine:latest
+WORKDIR /server
 
+COPY --from=builder /app/api /server
+COPY --from=builder /app/.env /server
+COPY --from=builder /app/storage/migrations /server/storage/migrations
 EXPOSE 8080
+ENTRYPOINT ["./api"]

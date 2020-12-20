@@ -2,13 +2,15 @@ package http
 
 import (
 	"fmt"
+	"github.com/Wnzl/webchat/storage"
 	"github.com/go-chi/chi"
 	"github.com/tarent/logrus"
 	"net/http"
 )
 
 type Server struct {
-	Port int
+	Storage *storage.PostgreSqlStorage
+	Port    int
 }
 
 func (s *Server) Start() error {
