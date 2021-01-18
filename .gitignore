@@ -2,3 +2,5 @@ frontend/node_modules
 
 .env
 .idea
+.eslintcache
+debug.log
