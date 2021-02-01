@@ -10,6 +10,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lestrrat-go/jwx v1.1.0
 	github.com/tarent/logrus v0.11.5
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

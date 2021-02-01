@@ -14,11 +14,6 @@ type ErrResponse struct {
 	ErrorText  string `json:"error,omitempty"` // application-level error message, for debugging
 }
 
-func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	render.Status(r, e.HTTPStatusCode)
-	return nil
-}
-
 func ErrInvalidRequest(err error) render.Renderer {
 	return &ErrResponse{
 		Err:            err,
@@ -26,4 +21,9 @@ func ErrInvalidRequest(err error) render.Renderer {
 		StatusText:     "Invalid request.",
 		ErrorText:      err.Error(),
 	}
+}
+
+func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	render.Status(r, e.HTTPStatusCode)
+	return nil
 }

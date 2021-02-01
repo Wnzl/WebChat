@@ -8,13 +8,12 @@ import (
 	"github.com/tarent/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 	"os"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
+		panic("No .env file found")
 	}
 	dns := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
