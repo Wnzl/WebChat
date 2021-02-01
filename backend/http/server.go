@@ -3,11 +3,13 @@ package http
 import (
 	"fmt"
 	"github.com/Wnzl/webchat/controllers"
+	_ "github.com/Wnzl/webchat/docs"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
 	"github.com/lestrrat-go/jwx/jwa"
+	"github.com/swaggo/http-swagger"
 	"github.com/tarent/logrus"
 	"gorm.io/gorm"
 	"net/http"
@@ -45,6 +47,8 @@ func (s *Server) Start() error {
 			_, _ = w.Write([]byte(fmt.Sprintf("pong, user: %v", claims["user_id"])))
 		})
 	})
+
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 	logrus.Info(http.ListenAndServe(fmt.Sprintf(":%v", s.Port), r))
 	return nil

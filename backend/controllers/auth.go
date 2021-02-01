@@ -28,6 +28,11 @@ type registerRequest struct {
 	PasswordConfirm string `json:"password_confirmation" validate:"required,min=8"`
 }
 
+type userResponse struct {
+	ID    uint   `json:"id"`
+	Email string `json:"email"`
+}
+
 var validate *validator.Validate
 
 func NewAuthController(db *gorm.DB, jwtAuth *jwtauth.JWTAuth) *AuthController {
@@ -48,6 +53,16 @@ func (auth *AuthController) Routes() chi.Router {
 	return r
 }
 
+// login godoc
+// @Summary Authenticate user and receive JWT
+// @Description Send credentials and get JWT
+// @Tags auth
+// @Param credentials body loginRequest true "Credentials"
+// @Accept  json
+// @Produce  json
+// @Failure 400 {object} ErrResponse
+// @Success 200 {string} string "JWT token"
+// @Router /login [post]
 func (auth *AuthController) login(w http.ResponseWriter, r *http.Request) {
 	var request loginRequest
 	if err := render.Bind(r, &request); err != nil {
@@ -83,6 +98,16 @@ func (auth *AuthController) login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// signup godoc
+// @Summary Register new user
+// @Description Send user data and register new user
+// @Tags auth
+// @Param credentials body registerRequest true "New user data"
+// @Accept  json
+// @Produce  json
+// @Failure 400 {object} ErrResponse
+// @Success 201 {object} userResponse "new user"
+// @Router /signup [post]
 func (auth *AuthController) signup(w http.ResponseWriter, r *http.Request) {
 	var request registerRequest
 	if err := render.Bind(r, &request); err != nil {
@@ -102,9 +127,9 @@ func (auth *AuthController) signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.JSON(w, r, map[string]interface{}{
-		"id":    user.ID,
-		"email": user.Email,
+	render.JSON(w, r, userResponse{
+		ID:    user.ID,
+		Email: user.Email,
 	})
 }
 

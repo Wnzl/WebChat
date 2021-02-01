@@ -11,6 +11,10 @@ import (
 	"os"
 )
 
+// @title WebChat API
+// @version 1.0
+// @description WebChat golang backend server.
+// @host localhost:8080
 func main() {
 	if err := godotenv.Load(); err != nil {
 		panic("No .env file found")
