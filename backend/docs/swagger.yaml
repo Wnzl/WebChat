@@ -1,5 +1,5 @@
 definitions:
-  controllers.ErrResponse:
+  api.ErrResponse:
     properties:
       code:
         description: application-specific error code
@@ -11,7 +11,7 @@ definitions:
         description: user-level status message
         type: string
     type: object
-  controllers.loginRequest:
+  api.loginRequest:
     properties:
       email:
         type: string
@@ -21,7 +21,7 @@ definitions:
     - email
     - password
     type: object
-  controllers.registerRequest:
+  api.registerRequest:
     properties:
       email:
         type: string
@@ -34,7 +34,7 @@ definitions:
     - password
     - password_confirmation
     type: object
-  controllers.userResponse:
+  api.userResponse:
     properties:
       email:
         type: string
@@ -59,7 +59,7 @@ paths:
         name: credentials
         required: true
         schema:
-          $ref: '#/definitions/controllers.loginRequest'
+          $ref: '#/definitions/api.loginRequest'
       produces:
       - application/json
       responses:
@@ -70,7 +70,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/controllers.ErrResponse'
+            $ref: '#/definitions/api.ErrResponse'
       summary: Authenticate user and receive JWT
       tags:
       - auth
@@ -85,18 +85,18 @@ paths:
         name: credentials
         required: true
         schema:
-          $ref: '#/definitions/controllers.registerRequest'
+          $ref: '#/definitions/api.registerRequest'
       produces:
       - application/json
       responses:
         "201":
           description: new user
           schema:
-            $ref: '#/definitions/controllers.userResponse'
+            $ref: '#/definitions/api.userResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/controllers.ErrResponse'
+            $ref: '#/definitions/api.ErrResponse'
       summary: Register new user
       tags:
       - auth

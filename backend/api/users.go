@@ -1,20 +1,17 @@
-package controllers
+package api
 
 import (
 	"errors"
+	"github.com/Wnzl/webchat/auth"
 	"github.com/Wnzl/webchat/models"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
-	"gorm.io/gorm"
 	"net/http"
 )
 
-type AuthController struct {
-	DB      *gorm.DB
-	jwtAuth *jwtauth.JWTAuth
+type UsersResource struct {
+	DB *models.Storage
 }
 
 type loginRequest struct {
@@ -35,25 +32,15 @@ type userResponse struct {
 
 var validate *validator.Validate
 
-func NewAuthController(db *gorm.DB, jwtAuth *jwtauth.JWTAuth) *AuthController {
+func NewUsersResource(db *models.Storage) *UsersResource {
 	validate = validator.New()
 
-	return &AuthController{
-		DB:      db,
-		jwtAuth: jwtAuth,
+	return &UsersResource{
+		DB: db,
 	}
 }
 
-func (auth *AuthController) Routes() chi.Router {
-	r := chi.NewRouter()
-
-	r.Post("/login", auth.login)
-	r.Post("/signup", auth.signup)
-
-	return r
-}
-
-// login godoc
+// UserLogin godoc
 // @Summary Authenticate user and receive JWT
 // @Description Send credentials and get JWT
 // @Tags auth
@@ -63,7 +50,7 @@ func (auth *AuthController) Routes() chi.Router {
 // @Failure 400 {object} ErrResponse
 // @Success 200 {string} string "JWT token"
 // @Router /login [post]
-func (auth *AuthController) login(w http.ResponseWriter, r *http.Request) {
+func (ur *UsersResource) UserLogin(w http.ResponseWriter, r *http.Request) {
 	var request loginRequest
 	if err := render.Bind(r, &request); err != nil {
 		_ = render.Render(w, r, ErrInvalidRequest(err))
@@ -71,7 +58,7 @@ func (auth *AuthController) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
-	auth.DB.First(&user, "email = ?", request.Email)
+	ur.DB.First(&user, "email = ?", request.Email)
 	if user.ID == 0 {
 		render.Status(r, http.StatusUnauthorized)
 		_ = render.Render(w, r, ErrInvalidRequest(errors.New("wrong credentials")))
@@ -85,20 +72,15 @@ func (auth *AuthController) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, tokenString, err := auth.jwtAuth.Encode(map[string]interface{}{"user_id": user.ID})
-	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		_ = render.Render(w, r, ErrInvalidRequest(err))
-		return
-	}
+	jsonToken := auth.GetToken(&user)
 
 	render.Status(r, http.StatusOK)
 	render.JSON(w, r, map[string]string{
-		"access token": tokenString,
+		"access_token": jsonToken,
 	})
 }
 
-// signup godoc
+// UserSignup godoc
 // @Summary Register new user
 // @Description Send user data and register new user
 // @Tags auth
@@ -108,7 +90,7 @@ func (auth *AuthController) login(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrResponse
 // @Success 201 {object} userResponse "new user"
 // @Router /signup [post]
-func (auth *AuthController) signup(w http.ResponseWriter, r *http.Request) {
+func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 	var request registerRequest
 	if err := render.Bind(r, &request); err != nil {
 		_ = render.Render(w, r, ErrInvalidRequest(err))
@@ -120,7 +102,7 @@ func (auth *AuthController) signup(w http.ResponseWriter, r *http.Request) {
 		Password: request.Password,
 	}
 
-	result := auth.DB.Create(&user)
+	result := ur.DB.Create(&user)
 	if result.Error != nil {
 		_ = render.Render(w, r, ErrInvalidRequest(result.Error))
 		return
@@ -131,6 +113,20 @@ func (auth *AuthController) signup(w http.ResponseWriter, r *http.Request) {
 		ID:    user.ID,
 		Email: user.Email,
 	})
+}
+
+func (ur *UsersResource) UserInfo(w http.ResponseWriter, r *http.Request) {
+	user := ur.GetUserFromContext(r)
+
+	render.JSON(w, r, user)
+}
+
+func (ur *UsersResource) GetUserFromContext(r *http.Request) *models.User {
+	claims := auth.GetUserClaimsFromContext(r)
+
+	var user models.User
+	ur.DB.First(&user, "id = ?", claims["user_id"])
+	return &user
 }
 
 func (u *loginRequest) Bind(r *http.Request) error {

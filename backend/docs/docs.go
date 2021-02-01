@@ -44,7 +44,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.loginRequest"
+                            "$ref": "#/definitions/api.loginRequest"
                         }
                     }
                 ],
@@ -58,7 +58,7 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.ErrResponse"
+                            "$ref": "#/definitions/api.ErrResponse"
                         }
                     }
                 }
@@ -84,7 +84,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.registerRequest"
+                            "$ref": "#/definitions/api.registerRequest"
                         }
                     }
                 ],
@@ -92,13 +92,13 @@ var doc = `{
                     "201": {
                         "description": "new user",
                         "schema": {
-                            "$ref": "#/definitions/controllers.userResponse"
+                            "$ref": "#/definitions/api.userResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.ErrResponse"
+                            "$ref": "#/definitions/api.ErrResponse"
                         }
                     }
                 }
@@ -106,7 +106,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "controllers.ErrResponse": {
+        "api.ErrResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -123,7 +123,7 @@ var doc = `{
                 }
             }
         },
-        "controllers.loginRequest": {
+        "api.loginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -138,7 +138,7 @@ var doc = `{
                 }
             }
         },
-        "controllers.registerRequest": {
+        "api.registerRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -157,7 +157,7 @@ var doc = `{
                 }
             }
         },
-        "controllers.userResponse": {
+        "api.userResponse": {
             "type": "object",
             "properties": {
                 "email": {

@@ -28,7 +28,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.loginRequest"
+                            "$ref": "#/definitions/api.loginRequest"
                         }
                     }
                 ],
@@ -42,7 +42,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.ErrResponse"
+                            "$ref": "#/definitions/api.ErrResponse"
                         }
                     }
                 }
@@ -68,7 +68,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.registerRequest"
+                            "$ref": "#/definitions/api.registerRequest"
                         }
                     }
                 ],
@@ -76,13 +76,13 @@
                     "201": {
                         "description": "new user",
                         "schema": {
-                            "$ref": "#/definitions/controllers.userResponse"
+                            "$ref": "#/definitions/api.userResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controllers.ErrResponse"
+                            "$ref": "#/definitions/api.ErrResponse"
                         }
                     }
                 }
@@ -90,7 +90,7 @@
         }
     },
     "definitions": {
-        "controllers.ErrResponse": {
+        "api.ErrResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -107,7 +107,7 @@
                 }
             }
         },
-        "controllers.loginRequest": {
+        "api.loginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -122,7 +122,7 @@
                 }
             }
         },
-        "controllers.registerRequest": {
+        "api.registerRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -141,7 +141,7 @@
                 }
             }
         },
-        "controllers.userResponse": {
+        "api.userResponse": {
             "type": "object",
             "properties": {
                 "email": {
