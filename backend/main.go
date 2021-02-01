@@ -1,39 +1,40 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Wnzl/webchat/http"
-	"github.com/Wnzl/webchat/storage"
+	"github.com/Wnzl/webchat/models"
+	"github.com/joho/godotenv"
 	"github.com/tarent/logrus"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"log"
 	"os"
-	"strconv"
-)
-
-const (
-	dbUsernameEnv = "DATABASE_USERNAME"
-	dbPasswordEnv = "DATABASE_PASSWORD"
-	dbNameEnv     = "DATABASE_NAME"
-	dbHostEnv     = "DATABASE_HOST"
-	dbPortEnv     = "DATABASE_PORT"
 )
 
 func main() {
-	port, err := strconv.Atoi(os.Getenv(dbPortEnv))
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found")
+	}
+	dns := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		os.Getenv("POSTGRES_HOST"),
+		os.Getenv("POSTGRES_PORT"),
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_DB"),
+	)
+	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
 	if err != nil {
-		logrus.WithError(err).Fatal("Converting port to int")
+		panic(err)
 	}
 
-	postgresql, err := storage.NewPostgreSqlStorage(storage.Config{
-		Username:     os.Getenv(dbUsernameEnv),
-		Password:     os.Getenv(dbPasswordEnv),
-		DatabaseName: os.Getenv(dbNameEnv),
-		Host:         os.Getenv(dbHostEnv),
-		Port:         port,
-	})
+	err = db.AutoMigrate(&models.User{})
 	if err != nil {
-		logrus.WithError(err).Fatal("Storage driver initializing")
+		panic(err)
 	}
 
-	server := http.Server{Storage: postgresql, Port: 8080}
+	server := http.Server{Storage: db, Port: 8080}
 
 	logrus.Info("Starting rest server")
 	logrus.WithError(server.Start()).Fatal("Rest server can't start")
