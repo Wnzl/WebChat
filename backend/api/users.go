@@ -72,11 +72,13 @@ func (ur *UsersResource) UserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonToken := auth.GetToken(&user)
-
 	render.Status(r, http.StatusOK)
-	render.JSON(w, r, map[string]string{
-		"access_token": jsonToken,
+	render.JSON(w, r, map[string]interface{}{
+		"user": userResponse{
+			ID:    user.ID,
+			Email: user.Email,
+		},
+		"access_token": auth.GetToken(&user),
 	})
 }
 
@@ -109,9 +111,12 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.JSON(w, r, userResponse{
-		ID:    user.ID,
-		Email: user.Email,
+	render.JSON(w, r, map[string]interface{}{
+		"user": userResponse{
+			ID:    user.ID,
+			Email: user.Email,
+		},
+		"access_token": auth.GetToken(&user),
 	})
 }
 
