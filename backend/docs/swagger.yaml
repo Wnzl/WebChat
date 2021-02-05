@@ -1,12 +1,11 @@
 definitions:
   api.ErrResponse:
     properties:
-      code:
-        description: application-specific error code
-        type: integer
-      error:
-        description: application-level error message, for debugging
-        type: string
+      errors:
+        description: low-level runtime error
+        items:
+          type: string
+        type: array
       status:
         description: user-level status message
         type: string
@@ -28,7 +27,7 @@ definitions:
     - email
     - password
     type: object
-  api.registerRequest:
+  api.signupRequest:
     properties:
       email:
         type: string
@@ -60,23 +59,19 @@ paths:
       consumes:
       - application/json
       description: Get authenticated user's info
-      parameters:
-      - description: jwt header
-        in: header
-        name: JWT
-        required: true
-        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: user data
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/api.userResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Show user info
       tags:
       - users
@@ -117,7 +112,7 @@ paths:
         name: credentials
         required: true
         schema:
-          $ref: '#/definitions/api.registerRequest'
+          $ref: '#/definitions/api.signupRequest'
       produces:
       - application/json
       responses:
@@ -132,4 +127,9 @@ paths:
       summary: Register new user
       tags:
       - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

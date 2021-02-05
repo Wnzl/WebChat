@@ -26,6 +26,11 @@ var doc = `{
     "paths": {
         "/info": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get authenticated user's info",
                 "consumes": [
                     "application/json"
@@ -37,20 +42,11 @@ var doc = `{
                     "users"
                 ],
                 "summary": "Show user info",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "jwt header",
-                        "name": "JWT",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
-                        "description": "user data",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.userResponse"
                         }
                     },
                     "400": {
@@ -122,7 +118,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.registerRequest"
+                            "$ref": "#/definitions/api.signupRequest"
                         }
                     }
                 ],
@@ -147,13 +143,12 @@ var doc = `{
         "api.ErrResponse": {
             "type": "object",
             "properties": {
-                "code": {
-                    "description": "application-specific error code",
-                    "type": "integer"
-                },
-                "error": {
-                    "description": "application-level error message, for debugging",
-                    "type": "string"
+                "errors": {
+                    "description": "low-level runtime error",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "status": {
                     "description": "user-level status message",
@@ -187,7 +182,7 @@ var doc = `{
                 }
             }
         },
-        "api.registerRequest": {
+        "api.signupRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -216,6 +211,13 @@ var doc = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

@@ -15,6 +15,10 @@ import (
 // @version 1.0
 // @description WebChat golang backend server.
 // @host localhost:8080
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	if err := godotenv.Load(); err != nil {
 		logrus.WithError(err).Warning("Error loading .env file")

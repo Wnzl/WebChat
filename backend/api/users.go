@@ -124,13 +124,15 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 // @Summary Show user info
 // @Description Get authenticated user's info
 // @Tags users
-// @Param JWT header string true "jwt header"
 // @Accept  json
 // @Produce  json
 // @Failure 400 {object} ErrResponse
-// @Success 200 {string} string "user data"
+// @Success 200 {object} userResponse
+// @Security ApiKeyAuth
 // @Router /info [get]
 func (ur *UsersResource) UserInfo(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	print(authHeader)
 	user := ur.GetUserFromContext(r)
 
 	render.JSON(w, r, userResponse{
