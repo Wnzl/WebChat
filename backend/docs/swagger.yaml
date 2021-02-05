@@ -55,6 +55,31 @@ info:
   title: WebChat API
   version: "1.0"
 paths:
+  /info:
+    get:
+      consumes:
+      - application/json
+      description: Get authenticated user's info
+      parameters:
+      - description: jwt header
+        in: header
+        name: JWT
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user data
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      summary: Show user info
+      tags:
+      - users
   /login:
     post:
       consumes:

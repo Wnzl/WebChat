@@ -125,6 +125,16 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// UserInfo godoc
+// @Summary Show user info
+// @Description Get authenticated user's info
+// @Tags users
+// @Param JWT header string true "jwt header"
+// @Accept  json
+// @Produce  json
+// @Failure 400 {object} ErrResponse
+// @Success 200 {string} string "user data"
+// @Router /info [get]
 func (ur *UsersResource) UserInfo(w http.ResponseWriter, r *http.Request) {
 	user := ur.GetUserFromContext(r)
 

@@ -1,18 +1,17 @@
 FROM golang:1.15.2-alpine as builder
 
-WORKDIR /app
+WORKDIR /building
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o api .
+RUN CGO_ENABLED=0 GOOS=linux go build -o server .
 
 FROM alpine:latest
-WORKDIR /server
+WORKDIR /api
 
-COPY --from=builder /app/api /server
-COPY --from=builder /app/storage/migrations /server/storage/migrations
+COPY --from=builder /building/server /api
 EXPOSE 8080
-ENTRYPOINT ["./api"]
+ENTRYPOINT ["./server"]

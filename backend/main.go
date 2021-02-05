@@ -17,7 +17,7 @@ import (
 // @host localhost:8080
 func main() {
 	if err := godotenv.Load(); err != nil {
-		panic("No .env file found")
+		logrus.WithError(err).Warning("Error loading .env file")
 	}
 
 	db, err := models.NewPostgresDB(fmt.Sprintf(
@@ -29,7 +29,7 @@ func main() {
 		os.Getenv("POSTGRES_DB"),
 	))
 	if err != nil {
-		panic(err)
+		logrus.WithError(err).Fatal("Can't connect to database")
 	}
 
 	a := api.NewAPI(db)
