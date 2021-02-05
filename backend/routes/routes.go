@@ -25,6 +25,7 @@ func Routes(api *api.API) (*chi.Mux, error) {
 	r.Post("/login", api.Users.UserLogin)
 	r.Post("/signup", api.Users.UserSignup)
 
+	// private routes that requires to be authorized
 	r.Group(func(r chi.Router) {
 		r.Use(auth.JwtMiddleware.Handler)
 		r.Get("/info", api.Users.UserInfo)

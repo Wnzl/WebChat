@@ -50,9 +50,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "JWT token",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.authResponse"
                         }
                     },
                     "400": {
@@ -90,9 +90,9 @@ var doc = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "new user",
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/api.userResponse"
+                            "$ref": "#/definitions/api.authResponse"
                         }
                     },
                     "400": {
@@ -120,6 +120,17 @@ var doc = `{
                 "status": {
                     "description": "user-level status message",
                     "type": "string"
+                }
+            }
+        },
+        "api.authResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/api.userResponse"
                 }
             }
         },

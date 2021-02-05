@@ -25,6 +25,11 @@ type registerRequest struct {
 	PasswordConfirm string `json:"password_confirmation" validate:"required,min=8"`
 }
 
+type authResponse struct {
+	User        userResponse `json:"user"`
+	AccessToken string       `json:"access_token"`
+}
+
 type userResponse struct {
 	ID    uint   `json:"id"`
 	Email string `json:"email"`
@@ -48,7 +53,7 @@ func NewUsersResource(db *models.Storage) *UsersResource {
 // @Accept  json
 // @Produce  json
 // @Failure 400 {object} ErrResponse
-// @Success 200 {string} string "JWT token"
+// @Success 200 {object} authResponse
 // @Router /login [post]
 func (ur *UsersResource) UserLogin(w http.ResponseWriter, r *http.Request) {
 	var request loginRequest
@@ -73,12 +78,12 @@ func (ur *UsersResource) UserLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusOK)
-	render.JSON(w, r, map[string]interface{}{
-		"user": userResponse{
+	render.JSON(w, r, authResponse{
+		User: userResponse{
 			ID:    user.ID,
 			Email: user.Email,
 		},
-		"access_token": auth.GetToken(&user),
+		AccessToken: auth.GetToken(&user),
 	})
 }
 
@@ -90,7 +95,7 @@ func (ur *UsersResource) UserLogin(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Failure 400 {object} ErrResponse
-// @Success 201 {object} userResponse "new user"
+// @Success 201 {object} authResponse
 // @Router /signup [post]
 func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 	var request registerRequest
@@ -111,12 +116,12 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.JSON(w, r, map[string]interface{}{
-		"user": userResponse{
+	render.JSON(w, r, authResponse{
+		User: userResponse{
 			ID:    user.ID,
 			Email: user.Email,
 		},
-		"access_token": auth.GetToken(&user),
+		AccessToken: auth.GetToken(&user),
 	})
 }
 

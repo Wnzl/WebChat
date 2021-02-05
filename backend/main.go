@@ -34,6 +34,9 @@ func main() {
 
 	a := api.NewAPI(db)
 	server, err := routes.Routes(a)
+	if err != nil {
+		panic(err)
+	}
 
 	logrus.Info("Starting rest server")
 	logrus.Error(http.ListenAndServe(":8080", server))
