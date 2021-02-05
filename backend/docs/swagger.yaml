@@ -20,8 +20,10 @@ definitions:
   api.loginRequest:
     properties:
       email:
+        default: email@example.com
         type: string
       password:
+        default: password
         type: string
     required:
     - email
@@ -30,15 +32,22 @@ definitions:
   api.signupRequest:
     properties:
       email:
+        default: email@example.com
         type: string
       password:
+        default: password
         type: string
       password_confirmation:
+        default: password
+        type: string
+      username:
+        default: username
         type: string
     required:
     - email
     - password
     - password_confirmation
+    - username
     type: object
   api.userResponse:
     properties:
@@ -46,6 +55,8 @@ definitions:
         type: string
       id:
         type: integer
+      username:
+        type: string
     type: object
 host: localhost:8080
 info:

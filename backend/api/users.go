@@ -19,6 +19,7 @@ type loginRequest struct {
 }
 
 type signupRequest struct {
+	Username        string `json:"username" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required,min=8,eqfield=PasswordConfirm"`
 	PasswordConfirm string `json:"password_confirmation" validate:"required,min=8"`
@@ -30,8 +31,9 @@ type authResponse struct {
 }
 
 type userResponse struct {
-	ID    uint   `json:"id"`
-	Email string `json:"email"`
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 func NewUsersResource(db *models.Storage) *UsersResource {
@@ -75,8 +77,9 @@ func (ur *UsersResource) UserLogin(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusOK)
 	render.JSON(w, r, authResponse{
 		User: userResponse{
-			ID:    user.ID,
-			Email: user.Email,
+			ID:       user.ID,
+			Username: user.Username,
+			Email:    user.Email,
 		},
 		AccessToken: auth.GetToken(&user),
 	})
@@ -101,6 +104,7 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 
 	user := models.User{
 		Email:    request.Email,
+		Username: request.Username,
 		Password: request.Password,
 	}
 
@@ -113,8 +117,9 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusCreated)
 	render.JSON(w, r, authResponse{
 		User: userResponse{
-			ID:    user.ID,
-			Email: user.Email,
+			ID:       user.ID,
+			Username: user.Username,
+			Email:    user.Email,
 		},
 		AccessToken: auth.GetToken(&user),
 	})
@@ -131,13 +136,12 @@ func (ur *UsersResource) UserSignup(w http.ResponseWriter, r *http.Request) {
 // @Security ApiKeyAuth
 // @Router /info [get]
 func (ur *UsersResource) UserInfo(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	print(authHeader)
 	user := ur.GetUserFromContext(r)
 
 	render.JSON(w, r, userResponse{
-		ID:    user.ID,
-		Email: user.Email,
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
 	})
 }
 

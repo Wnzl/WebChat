@@ -175,10 +175,12 @@ var doc = `{
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "email@example.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "password"
                 }
             }
         },
@@ -187,17 +189,25 @@ var doc = `{
             "required": [
                 "email",
                 "password",
-                "password_confirmation"
+                "password_confirmation",
+                "username"
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "email@example.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "password"
                 },
                 "password_confirmation": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "password"
+                },
+                "username": {
+                    "type": "string",
+                    "default": "username"
                 }
             }
         },
@@ -209,6 +219,9 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
