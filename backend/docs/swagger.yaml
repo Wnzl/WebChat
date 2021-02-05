@@ -1,0 +1,103 @@
+definitions:
+  api.ErrResponse:
+    properties:
+      code:
+        description: application-specific error code
+        type: integer
+      error:
+        description: application-level error message, for debugging
+        type: string
+      status:
+        description: user-level status message
+        type: string
+    type: object
+  api.loginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  api.registerRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      password_confirmation:
+        type: string
+    required:
+    - email
+    - password
+    - password_confirmation
+    type: object
+  api.userResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: WebChat golang backend server.
+  title: WebChat API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Send credentials and get JWT
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/api.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      summary: Authenticate user and receive JWT
+      tags:
+      - auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Send user data and register new user
+      parameters:
+      - description: New user data
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/api.registerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: new user
+          schema:
+            $ref: '#/definitions/api.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      summary: Register new user
+      tags:
+      - auth
+swagger: "2.0"
